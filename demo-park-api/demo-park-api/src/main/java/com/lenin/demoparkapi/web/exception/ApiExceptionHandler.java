@@ -1,6 +1,7 @@
 package com.lenin.demoparkapi.web.exception;
 
 
+import com.lenin.demoparkapi.exception.EntityNotFoundException;
 import com.lenin.demoparkapi.exception.UsernameUniqueViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class) // vai ficar escutando esssa exception, toda vez que ela for lançada, vai cair neste método.
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMessage> methodArgumentNotValidException(MethodArgumentNotValidException ex,
                                                                         HttpServletRequest request,
                                                                         BindingResult result){
@@ -33,18 +34,28 @@ public class ApiExceptionHandler {
     @ExceptionHandler(UsernameUniqueViolationException.class) // Quando trabalhar com UNIQUE, É BOM USAR O RUNTIMEEXCEPTION.
 
     // vai ficar escutando esssa exception, toda vez que ela for lançada, vai cair neste método.
-    public ResponseEntity<ErrorMessage> methodArgumentNotValidException(RuntimeException ex,
+    public ResponseEntity<ErrorMessage> usernameUniqueViolationException(RuntimeException ex,
                                                                         HttpServletRequest request
                                                                        ){
         log.error("API ERROR ->", ex);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)//CONFLITO DE INFORMAÇÕES
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(new ErrorMessage(request, HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()) );
+                .body(new ErrorMessage(request, HttpStatus.CONFLICT, ex.getMessage()) );
     }
 
 
-
+    @ExceptionHandler(EntityNotFoundException.class)
+    // vai ficar escutando esssa exception, toda vez que ela for lançada, vai cair neste método.
+    public ResponseEntity<ErrorMessage> entityNotFoundException(RuntimeException ex,
+                                                                        HttpServletRequest request
+    ){
+        log.error("API ERROR ->", ex);
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)//CONFLITO DE INFORMAÇÕES
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()) );
+    }
 
 
 

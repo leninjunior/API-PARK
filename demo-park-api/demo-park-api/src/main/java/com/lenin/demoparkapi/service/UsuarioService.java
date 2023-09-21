@@ -2,8 +2,10 @@ package com.lenin.demoparkapi.service;
 
 
 import com.lenin.demoparkapi.entity.Usuario;
+import com.lenin.demoparkapi.exception.EntityNotFoundException;
 import com.lenin.demoparkapi.exception.UsernameUniqueViolationException;
 import com.lenin.demoparkapi.repository.UsuarioRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +33,7 @@ public class UsuarioService {
         @Transactional(readOnly = true)
         public Usuario buscarPorId(Long id) {
             return usuarioRepository.findById(id).orElseThrow(
-                    () -> new RuntimeException("Usuário não encontrado.")
+                    () -> new EntityNotFoundException(String.format("Usuário id={%s} não encontrado.", id))
             );
         }
 
