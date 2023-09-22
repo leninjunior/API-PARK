@@ -2,6 +2,7 @@ package com.lenin.demoparkapi.web.exception;
 
 
 import com.lenin.demoparkapi.exception.EntityNotFoundException;
+import com.lenin.demoparkapi.exception.PasswordInvalidException;
 import com.lenin.demoparkapi.exception.UsernameUniqueViolationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +58,17 @@ public class ApiExceptionHandler {
                 .body(new ErrorMessage(request, HttpStatus.NOT_FOUND, ex.getMessage()) );
     }
 
-
+    @ExceptionHandler(PasswordInvalidException.class)
+    // vai ficar escutando esssa exception, toda vez que ela for lançada, vai cair neste método.
+    public ResponseEntity<ErrorMessage> passwordInvalidException(RuntimeException ex,
+                                                                HttpServletRequest request
+    ){
+        log.error("API ERROR ->", ex);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)//CONFLITO DE INFORMAÇÕES
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new ErrorMessage(request, HttpStatus.BAD_REQUEST, ex.getMessage()) );
+    }
 
 
 }
